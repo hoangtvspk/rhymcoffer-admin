@@ -12,7 +12,7 @@ import {
 	Switch,
 } from 'antd'
 import {PlusOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons'
-import {playlistService} from '../services/api'
+import {playlistService} from '../services'
 import type {PlaylistRequest, PlaylistResponse} from '../types/api'
 
 export const Playlists = () => {

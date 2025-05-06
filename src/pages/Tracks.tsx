@@ -13,7 +13,7 @@ import {
 	Switch,
 } from 'antd'
 import {PlusOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons'
-import {trackService} from '../services/api'
+import {trackService} from '../services'
 import type {TrackRequest, TrackResponse} from '../types/api'
 
 export const Tracks = () => {

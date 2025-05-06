@@ -13,8 +13,8 @@ import {
 	Select,
 } from 'antd'
 import {PlusOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons'
-import {artistService} from '../services/api'
 import type {ArtistRequest, ArtistResponse} from '../types/api'
+import {artistService} from '@/services'
 
 export const Artists = () => {
 	const [artists, setArtists] = useState<ArtistResponse[]>([])

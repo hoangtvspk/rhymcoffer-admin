@@ -131,7 +131,8 @@ export interface AuthenticationRequest {
 }
 
 export interface AuthenticationResponse {
-	token: string
+	accessToken: string
+	refreshToken: string
 	username: string
 	displayName?: string
 	email: string

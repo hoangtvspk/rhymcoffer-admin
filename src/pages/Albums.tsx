@@ -13,7 +13,7 @@ import {
 	DatePicker,
 } from 'antd'
 import {PlusOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons'
-import {albumService} from '../services/api'
+import {albumService} from '../services'
 import type {AlbumRequest, AlbumResponse} from '../types/api'
 import dayjs from 'dayjs'
 

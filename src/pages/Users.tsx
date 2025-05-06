@@ -11,8 +11,7 @@ import {
 	Popconfirm,
 } from 'antd'
 import {PlusOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons'
-import {useAuthStore} from '../store/auth'
-import {userService} from '../services/api'
+import {userService} from '../services'
 import type {UserRequest, UserResponse} from '../types/api'
 
 export const Users = () => {
