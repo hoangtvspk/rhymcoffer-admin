@@ -26,4 +26,9 @@ export const authService = {
 		if (!response.data.success) throw new Error(response.data.message)
 		return response.data.data
 	},
+
+	refresh: async () => {
+		// This assumes backend sets new auth_token cookie on success
+		return api.post('/auth/refresh')
+	},
 }

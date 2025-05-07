@@ -29,7 +29,7 @@ export interface TrackRequest {
 	imageUrl?: string
 	durationMs?: number
 	popularity?: number
-	previewUrl?: string
+	trackUrl?: string
 	trackNumber?: string
 	explicit?: boolean
 	isrc?: string
@@ -43,7 +43,7 @@ export interface TrackResponse {
 	imageUrl?: string
 	durationMs?: number
 	popularity?: number
-	previewUrl?: string
+	trackUrl?: string
 	trackNumber?: string
 	explicit?: boolean
 	isrc?: string
@@ -83,7 +83,6 @@ export interface ArtistRequest {
 	imageUrl?: string
 	description?: string
 	popularity?: number
-	genres?: string[]
 }
 
 export interface ArtistResponse {
@@ -92,7 +91,6 @@ export interface ArtistResponse {
 	imageUrl?: string
 	description?: string
 	popularity?: number
-	genres: string[]
 	trackIds: number[]
 	albumIds: number[]
 	followerIds: number[]

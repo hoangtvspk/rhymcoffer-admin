@@ -42,7 +42,12 @@ export const Albums = () => {
 
 	const handleCreate = async (values: AlbumRequest) => {
 		try {
-			await albumService.create(values)
+			await albumService.create({
+				...values,
+				releaseDate: values.releaseDate
+					? dayjs(values.releaseDate).format('YYYY-MM-DD')
+					: undefined,
+			})
 			message.success('Album created successfully')
 			setModalVisible(false)
 			form.resetFields()
@@ -55,7 +60,12 @@ export const Albums = () => {
 	const handleUpdate = async (values: AlbumRequest) => {
 		if (!editingAlbum) return
 		try {
-			await albumService.update(editingAlbum.id, values)
+			await albumService.update(editingAlbum.id, {
+				...values,
+				releaseDate: values.releaseDate
+					? dayjs(values.releaseDate).format('YYYY-MM-DD')
+					: undefined,
+			})
 			message.success('Album updated successfully')
 			setModalVisible(false)
 			setEditingAlbum(null)
@@ -184,7 +194,7 @@ export const Albums = () => {
 					</Form.Item>
 
 					<Form.Item name='releaseDate' label='Release Date'>
-						<DatePicker style={{width: '100%'}} />
+						<DatePicker style={{width: '100%'}} format='YYYY-MM-DD' />
 					</Form.Item>
 
 					<Form.Item name='albumType' label='Album Type'>

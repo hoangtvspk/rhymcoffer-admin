@@ -89,12 +89,6 @@ export const Artists = () => {
 			key: 'popularity',
 		},
 		{
-			title: 'Genres',
-			dataIndex: 'genres',
-			key: 'genres',
-			render: (genres: string[]) => genres.join(', '),
-		},
-		{
 			title: 'Actions',
 			key: 'actions',
 			render: (_: any, record: ArtistResponse) => (
@@ -177,15 +171,6 @@ export const Artists = () => {
 
 					<Form.Item name='popularity' label='Popularity'>
 						<InputNumber min={0} max={100} />
-					</Form.Item>
-
-					<Form.Item name='genres' label='Genres'>
-						<Select
-							mode='tags'
-							style={{width: '100%'}}
-							placeholder='Select genres'
-							options={[]}
-						/>
 					</Form.Item>
 
 					<Form.Item name='description' label='Description'>
