@@ -47,8 +47,8 @@ export interface TrackResponse {
 	trackNumber?: string
 	explicit?: boolean
 	isrc?: string
-	albumId?: number
-	artistIds: number[]
+	album?: AlbumResponse
+	artists?: ArtistResponse[]
 	playlistIds: number[]
 	savedByUserIds: number[]
 	createdAt: string
@@ -117,7 +117,7 @@ export interface AlbumResponse {
 	releaseDate?: string
 	albumType?: string
 	artistIds: number[]
-	trackIds: number[]
+	tracks: TrackResponse[]
 	followerIds: number[]
 	createdAt: string
 	updatedAt: string

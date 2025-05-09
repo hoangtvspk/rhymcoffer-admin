@@ -36,23 +36,10 @@ const UpdateTrack = ({
 				setFetching(true)
 				try {
 					const track: TrackResponse = await trackService.getById(trackId)
+					setSelectedAlbum(track.album || null)
+					setSelectedArtists(track.artists || [])
 					form.setFieldsValue(track)
 					// Fetch album if albumId exists
-					if (track.albumId) {
-						const album = await albumService.getById(track.albumId)
-						setSelectedAlbum(album)
-					} else {
-						setSelectedAlbum(null)
-					}
-					// Fetch artists if artistIds exist
-					if (track.artistIds && track.artistIds.length > 0) {
-						const artists = await Promise.all(
-							track.artistIds.map((id) => artistService.getById(id))
-						)
-						setSelectedArtists(artists)
-					} else {
-						setSelectedArtists([])
-					}
 				} finally {
 					setFetching(false)
 				}

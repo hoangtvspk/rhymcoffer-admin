@@ -1,28 +1,18 @@
 import {useState, useEffect} from 'react'
-import {
-	Button,
-	Card,
-	Table,
-	Modal,
-	Form,
-	Input,
-	message,
-	Space,
-	Popconfirm,
-	InputNumber,
-	DatePicker,
-} from 'antd'
+import {Button, Card, Table, message, Space, Popconfirm, Image} from 'antd'
 import {PlusOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons'
 import {albumService} from '@/services'
-import type {AlbumRequest, AlbumResponse} from '@/types/api'
-import dayjs from 'dayjs'
+import type {AlbumResponse} from '@/types/api'
+import {useNavigate} from 'react-router-dom'
+import {CreateAlbumModal} from './components/CreateAlbumModal'
+import {ColumnType} from 'antd/es/table'
 
 export const AlbumsView = () => {
 	const [albums, setAlbums] = useState<AlbumResponse[]>([])
 	const [loading, setLoading] = useState(false)
 	const [modalVisible, setModalVisible] = useState(false)
-	const [editingAlbum, setEditingAlbum] = useState<AlbumResponse | null>(null)
-	const [form] = Form.useForm()
+	const [selectedAlbums, setSelectedAlbums] = useState<AlbumResponse[]>([])
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		fetchAlbums()
@@ -40,42 +30,6 @@ export const AlbumsView = () => {
 		}
 	}
 
-	const handleCreate = async (values: AlbumRequest) => {
-		try {
-			await albumService.create({
-				...values,
-				releaseDate: values.releaseDate
-					? dayjs(values.releaseDate).format('YYYY-MM-DD')
-					: undefined,
-			})
-			message.success('Album created successfully')
-			setModalVisible(false)
-			form.resetFields()
-			fetchAlbums()
-		} catch (error) {
-			message.error('Failed to create album')
-		}
-	}
-
-	const handleUpdate = async (values: AlbumRequest) => {
-		if (!editingAlbum) return
-		try {
-			await albumService.update(editingAlbum.id, {
-				...values,
-				releaseDate: values.releaseDate
-					? dayjs(values.releaseDate).format('YYYY-MM-DD')
-					: undefined,
-			})
-			message.success('Album updated successfully')
-			setModalVisible(false)
-			setEditingAlbum(null)
-			form.resetFields()
-			fetchAlbums()
-		} catch (error) {
-			message.error('Failed to update album')
-		}
-	}
-
 	const handleDelete = async (id: number) => {
 		try {
 			await albumService.delete(id)
@@ -86,45 +40,67 @@ export const AlbumsView = () => {
 		}
 	}
 
-	const columns = [
+	const columns: ColumnType<AlbumResponse>[] = [
+		{
+			title: 'Id',
+			dataIndex: 'id',
+			key: 'id',
+			align: 'center',
+		},
 		{
 			title: 'Name',
 			dataIndex: 'name',
 			key: 'name',
+			align: 'center',
+		},
+		{
+			title: 'Image',
+			dataIndex: 'image',
+			key: 'image',
+			align: 'center',
+			render: (_, record: AlbumResponse) => (
+				<div>
+					<Image
+						src={
+							'https://vcdn1-vnexpress.vnecdn.net/2022/02/09/jisoo-5753-1632298728-1417-1644390050.jpg?w=460&h=0&q=100&dpr=2&fit=crop&s=2go4rNn55C2cgKQ_YlbNlQ'
+						}
+						alt={record.name}
+						width={100}
+						height={100}
+						className='rounded-2xl object-cover'
+					/>
+				</div>
+			),
 		},
 		{
 			title: 'Release Date',
 			dataIndex: 'releaseDate',
 			key: 'releaseDate',
+			align: 'center',
 		},
 		{
 			title: 'Album Type',
 			dataIndex: 'albumType',
 			key: 'albumType',
+			align: 'center',
 		},
 		{
 			title: 'Popularity',
 			dataIndex: 'popularity',
 			key: 'popularity',
+			align: 'center',
 		},
 		{
 			title: 'Actions',
 			key: 'actions',
+			align: 'center',
+			className: 'w-[200px]',
 			render: (_: any, record: AlbumResponse) => (
 				<Space>
 					<Button
 						type='primary'
 						icon={<EditOutlined />}
-						onClick={() => {
-							setEditingAlbum(record)
-							form.setFieldsValue({
-								...record,
-								releaseDate: record.releaseDate
-									? dayjs(record.releaseDate)
-									: null,
-							})
-							setModalVisible(true)
-						}}
+						onClick={() => navigate(`/albums/${record.id}`)}
 					>
 						Edit
 					</Button>
@@ -151,11 +127,7 @@ export const AlbumsView = () => {
 					<Button
 						type='primary'
 						icon={<PlusOutlined />}
-						onClick={() => {
-							setEditingAlbum(null)
-							form.resetFields()
-							setModalVisible(true)
-						}}
+						onClick={() => setModalVisible(true)}
 					>
 						Add Album
 					</Button>
@@ -163,6 +135,10 @@ export const AlbumsView = () => {
 			>
 				<Table
 					columns={columns}
+					rowSelection={{
+						selectedRowKeys: selectedAlbums.map((album) => album.id),
+						onChange: (_, selectedTracks) => setSelectedAlbums(selectedTracks),
+					}}
 					dataSource={albums}
 					loading={loading}
 					rowKey='id'
@@ -170,56 +146,14 @@ export const AlbumsView = () => {
 				/>
 			</Card>
 
-			<Modal
-				title={editingAlbum ? 'Edit Album' : 'Add Album'}
-				open={modalVisible}
-				onCancel={() => {
+			<CreateAlbumModal
+				visible={modalVisible}
+				onCancel={() => setModalVisible(false)}
+				onSuccess={() => {
 					setModalVisible(false)
-					setEditingAlbum(null)
-					form.resetFields()
+					fetchAlbums()
 				}}
-				footer={null}
-			>
-				<Form
-					form={form}
-					layout='vertical'
-					onFinish={editingAlbum ? handleUpdate : handleCreate}
-				>
-					<Form.Item
-						name='name'
-						label='Name'
-						rules={[{required: true, message: 'Please input album name!'}]}
-					>
-						<Input />
-					</Form.Item>
-
-					<Form.Item name='releaseDate' label='Release Date'>
-						<DatePicker style={{width: '100%'}} format='YYYY-MM-DD' />
-					</Form.Item>
-
-					<Form.Item name='albumType' label='Album Type'>
-						<Input />
-					</Form.Item>
-
-					<Form.Item name='popularity' label='Popularity'>
-						<InputNumber min={0} max={100} />
-					</Form.Item>
-
-					<Form.Item name='description' label='Description'>
-						<Input.TextArea />
-					</Form.Item>
-
-					<Form.Item name='imageUrl' label='Image URL'>
-						<Input />
-					</Form.Item>
-
-					<Form.Item>
-						<Button type='primary' htmlType='submit'>
-							{editingAlbum ? 'Update' : 'Create'}
-						</Button>
-					</Form.Item>
-				</Form>
-			</Modal>
+			/>
 		</div>
 	)
 }

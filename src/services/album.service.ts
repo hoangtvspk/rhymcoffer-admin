@@ -64,6 +64,22 @@ export const albumService = {
 		return response.data.data
 	},
 
+	addTracks: async (id: number, trackIds: number[]): Promise<void> => {
+		const response = await api.post<BaseResponse<null>>(
+			`/admin/albums/${id}/add-tracks`,
+			trackIds
+		)
+		if (!response.data.success) throw new Error(response.data.message)
+	},
+
+	removeTracks: async (id: number, trackIds: number[]): Promise<void> => {
+		const response = await api.delete<BaseResponse<null>>(
+			`/admin/albums/${id}/tracks`,
+			{data: trackIds}
+		)
+		if (!response.data.success) throw new Error(response.data.message)
+	},
+
 	getNewReleases: async (date: string): Promise<AlbumResponse[]> => {
 		const response = await api.get<BaseResponse<AlbumResponse[]>>(
 			'/admin/albums/new-releases',

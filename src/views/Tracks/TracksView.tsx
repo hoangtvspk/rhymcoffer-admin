@@ -1,10 +1,11 @@
 import {useState, useEffect} from 'react'
-import {Button, Card, Table, message, Space, Popconfirm} from 'antd'
+import {Button, Card, Table, message, Space, Popconfirm, Image} from 'antd'
 import {PlusOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons'
 import {trackService} from '../../services'
 import type {TrackResponse} from '../../types/api'
 import AddTrack from './components/AddTrack'
 import UpdateTrack from './components/UpdateTrack'
+import {ColumnType} from 'antd/es/table'
 
 const TracksView = () => {
 	const [tracks, setTracks] = useState<TrackResponse[]>([])
@@ -39,11 +40,37 @@ const TracksView = () => {
 		}
 	}
 
-	const columns = [
+	const columns: ColumnType<TrackResponse>[] = [
+		{
+			title: 'Id',
+			dataIndex: 'id',
+			key: 'id',
+			align: 'center',
+		},
 		{
 			title: 'Name',
 			dataIndex: 'name',
 			key: 'name',
+			align: 'center',
+		},
+		{
+			title: 'Image',
+			dataIndex: 'image',
+			key: 'image',
+			align: 'center',
+			render: (_, record: TrackResponse) => (
+				<div>
+					<Image
+						src={
+							'https://vcdn1-vnexpress.vnecdn.net/2022/02/09/jisoo-5753-1632298728-1417-1644390050.jpg?w=460&h=0&q=100&dpr=2&fit=crop&s=2go4rNn55C2cgKQ_YlbNlQ'
+						}
+						alt={record.name}
+						width={100}
+						height={100}
+						className='rounded-2xl object-cover'
+					/>
+				</div>
+			),
 		},
 		{
 			title: 'Duration (ms)',
@@ -64,6 +91,8 @@ const TracksView = () => {
 		{
 			title: 'Actions',
 			key: 'actions',
+			align: 'center',
+			className: 'w-[200px]',
 			render: (_: any, record: TrackResponse) => (
 				<Space>
 					<Button
@@ -110,7 +139,7 @@ const TracksView = () => {
 					dataSource={tracks}
 					loading={loading}
 					rowKey='id'
-					pagination={{pageSize: 10}}
+					pagination={{pageSize: 10, align: 'center'}}
 				/>
 			</Card>
 			<AddTrack

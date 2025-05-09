@@ -6,7 +6,7 @@ import type {AuthenticationRequest} from '@/types/api'
 export const LoginView = () => {
 	const navigate = useNavigate()
 	const location = useLocation()
-	const {login, isLoading, error, clearError} = useAuthStore()
+	const {login, isLoading, error} = useAuthStore()
 
 	const onFinish = async (values: AuthenticationRequest) => {
 		try {

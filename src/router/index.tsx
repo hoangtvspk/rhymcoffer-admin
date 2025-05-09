@@ -1,12 +1,15 @@
 import {createBrowserRouter} from 'react-router-dom'
 import {MainLayout} from '../layouts/MainLayout'
-import {Login} from '../pages/Login'
+import {Login} from '../pages/Auth/Login'
 import {ProtectedRoute} from '../components/ProtectedRoute'
-import {Users} from '@/pages/Users'
-import {Tracks} from '@/pages/Tracks'
-import {Playlists} from '@/pages/Playlists'
-import {Artists} from '@/pages/Artists'
-import {Albums} from '@/pages/Albums'
+import {Users} from '@/pages/Users/Users'
+import {Tracks} from '@/pages/Tracks/Tracks'
+import {Playlists} from '@/pages/Playlists/Playlists'
+import {Artists} from '@/pages/Artists/Artists'
+import {Albums} from '@/pages/Albums/Albums'
+import {EditAlbum} from '@/pages/Albums/EditAlbum'
+import {AddTrackToAlbum} from '@/pages/AddTrackToAlbum'
+
 export const router = createBrowserRouter([
 	{
 		path: '/login',
@@ -57,6 +60,22 @@ export const router = createBrowserRouter([
 				element: (
 					<ProtectedRoute>
 						<Albums />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: 'albums/:id',
+				element: (
+					<ProtectedRoute>
+						<EditAlbum />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: 'albums/:id/add-track',
+				element: (
+					<ProtectedRoute>
+						<AddTrackToAlbum />
 					</ProtectedRoute>
 				),
 			},
