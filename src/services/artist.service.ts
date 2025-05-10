@@ -1,4 +1,9 @@
-import type {ArtistRequest, ArtistResponse, BaseResponse} from '../types/api'
+import type {
+	ArtistRequest,
+	ArtistResponse,
+	BaseResponse,
+	TrackResponse,
+} from '../types/api'
 import api from './api'
 
 export const artistService = {
@@ -74,6 +79,22 @@ export const artistService = {
 	unfollow: async (artistId: number): Promise<void> => {
 		const response = await api.post<BaseResponse<null>>(
 			`/admin/artists/${artistId}/unfollow`
+		)
+		if (!response.data.success) throw new Error(response.data.message)
+	},
+
+	addTracks: async (id: number, trackIds: number[]): Promise<void> => {
+		const response = await api.post<BaseResponse<null>>(
+			`/admin/artists/${id}/tracks`,
+			trackIds
+		)
+		if (!response.data.success) throw new Error(response.data.message)
+	},
+
+	removeTracks: async (id: number, trackIds: number[]): Promise<void> => {
+		const response = await api.delete<BaseResponse<null>>(
+			`/admin/artists/${id}/tracks`,
+			{data: trackIds}
 		)
 		if (!response.data.success) throw new Error(response.data.message)
 	},

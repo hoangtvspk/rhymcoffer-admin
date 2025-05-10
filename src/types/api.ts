@@ -91,9 +91,9 @@ export interface ArtistResponse {
 	imageUrl?: string
 	description?: string
 	popularity?: number
-	trackIds: number[]
-	albumIds: number[]
-	followerIds: number[]
+	tracks: TrackResponse[]
+	albums: AlbumResponse[]
+	followers: UserResponse[]
 	createdAt: string
 	updatedAt: string
 }

@@ -9,6 +9,8 @@ import {Artists} from '@/pages/Artists/Artists'
 import {Albums} from '@/pages/Albums/Albums'
 import {EditAlbum} from '@/pages/Albums/EditAlbum'
 import {AddTrackToAlbum} from '@/pages/AddTrackToAlbum'
+import {EditArtist} from '@/pages/EditArtist'
+import {AddTracksToArtist} from '@/pages/Artists/AddTracksToArtist'
 
 export const router = createBrowserRouter([
 	{
@@ -52,6 +54,22 @@ export const router = createBrowserRouter([
 				element: (
 					<ProtectedRoute>
 						<Artists />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: 'artists/:id',
+				element: (
+					<ProtectedRoute>
+						<EditArtist />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: 'artists/:id/add-tracks',
+				element: (
+					<ProtectedRoute>
+						<AddTracksToArtist />
 					</ProtectedRoute>
 				),
 			},

@@ -3,26 +3,24 @@ import {
 	Button,
 	Card,
 	Table,
-	Modal,
-	Form,
-	Input,
 	message,
 	Space,
 	Popconfirm,
 	InputNumber,
+	Image,
 } from 'antd'
 import {PlusOutlined, EditOutlined, DeleteOutlined} from '@ant-design/icons'
 import type {ArtistRequest, ArtistResponse} from '@/types/api'
 import {artistService} from '@/services'
+import {CreateArtistModal} from './components/CreateArtistModal'
+import {useNavigate} from 'react-router-dom'
+import {ColumnType} from 'antd/es/table'
 
 export const ArtistsView = () => {
 	const [artists, setArtists] = useState<ArtistResponse[]>([])
 	const [loading, setLoading] = useState(false)
 	const [modalVisible, setModalVisible] = useState(false)
-	const [editingArtist, setEditingArtist] = useState<ArtistResponse | null>(
-		null
-	)
-	const [form] = Form.useForm()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		fetchArtists()
@@ -40,32 +38,6 @@ export const ArtistsView = () => {
 		}
 	}
 
-	const handleCreate = async (values: ArtistRequest) => {
-		try {
-			await artistService.create(values)
-			message.success('Artist created successfully')
-			setModalVisible(false)
-			form.resetFields()
-			fetchArtists()
-		} catch (error) {
-			message.error('Failed to create artist')
-		}
-	}
-
-	const handleUpdate = async (values: ArtistRequest) => {
-		if (!editingArtist) return
-		try {
-			await artistService.update(editingArtist.id, values)
-			message.success('Artist updated successfully')
-			setModalVisible(false)
-			setEditingArtist(null)
-			form.resetFields()
-			fetchArtists()
-		} catch (error) {
-			message.error('Failed to update artist')
-		}
-	}
-
 	const handleDelete = async (id: number) => {
 		try {
 			await artistService.delete(id)
@@ -76,11 +48,37 @@ export const ArtistsView = () => {
 		}
 	}
 
-	const columns = [
+	const columns: ColumnType<ArtistResponse>[] = [
+		{
+			title: 'Id',
+			dataIndex: 'id',
+			key: 'id',
+			align: 'center',
+		},
 		{
 			title: 'Name',
 			dataIndex: 'name',
 			key: 'name',
+			align: 'center',
+		},
+		{
+			title: 'Image',
+			dataIndex: 'image',
+			key: 'image',
+			align: 'center',
+			render: (_, record: ArtistResponse) => (
+				<div>
+					<Image
+						src={
+							'https://vcdn1-vnexpress.vnecdn.net/2022/02/09/jisoo-5753-1632298728-1417-1644390050.jpg?w=460&h=0&q=100&dpr=2&fit=crop&s=2go4rNn55C2cgKQ_YlbNlQ'
+						}
+						alt={record.name}
+						width={100}
+						height={100}
+						className='rounded-2xl object-cover'
+					/>
+				</div>
+			),
 		},
 		{
 			title: 'Popularity',
@@ -95,11 +93,7 @@ export const ArtistsView = () => {
 					<Button
 						type='primary'
 						icon={<EditOutlined />}
-						onClick={() => {
-							setEditingArtist(record)
-							form.setFieldsValue(record)
-							setModalVisible(true)
-						}}
+						onClick={() => navigate(`/artists/${record.id}`)}
 					>
 						Edit
 					</Button>
@@ -126,11 +120,7 @@ export const ArtistsView = () => {
 					<Button
 						type='primary'
 						icon={<PlusOutlined />}
-						onClick={() => {
-							setEditingArtist(null)
-							form.resetFields()
-							setModalVisible(true)
-						}}
+						onClick={() => setModalVisible(true)}
 					>
 						Add Artist
 					</Button>
@@ -145,48 +135,14 @@ export const ArtistsView = () => {
 				/>
 			</Card>
 
-			<Modal
-				title={editingArtist ? 'Edit Artist' : 'Add Artist'}
-				open={modalVisible}
-				onCancel={() => {
+			<CreateArtistModal
+				visible={modalVisible}
+				onCancel={() => setModalVisible(false)}
+				onSuccess={() => {
 					setModalVisible(false)
-					setEditingArtist(null)
-					form.resetFields()
+					fetchArtists()
 				}}
-				footer={null}
-			>
-				<Form
-					form={form}
-					layout='vertical'
-					onFinish={editingArtist ? handleUpdate : handleCreate}
-				>
-					<Form.Item
-						name='name'
-						label='Name'
-						rules={[{required: true, message: 'Please input artist name!'}]}
-					>
-						<Input />
-					</Form.Item>
-
-					<Form.Item name='popularity' label='Popularity'>
-						<InputNumber min={0} max={100} />
-					</Form.Item>
-
-					<Form.Item name='description' label='Description'>
-						<Input.TextArea />
-					</Form.Item>
-
-					<Form.Item name='imageUrl' label='Image URL'>
-						<Input />
-					</Form.Item>
-
-					<Form.Item>
-						<Button type='primary' htmlType='submit'>
-							{editingArtist ? 'Update' : 'Create'}
-						</Button>
-					</Form.Item>
-				</Form>
-			</Modal>
+			/>
 		</div>
 	)
 }
