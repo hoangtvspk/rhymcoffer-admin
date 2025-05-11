@@ -1,18 +1,25 @@
 import {artistService} from '@/services/artist.service'
 import {trackService} from '@/services/track.service'
-import type {ArtistRequest, ArtistResponse, TrackResponse} from '@/types/api'
+import type {
+	ArtistRequest,
+	ArtistResponse,
+	TrackResponse,
+	AlbumResponse,
+} from '@/types/api'
 import {Card, Form, message} from 'antd'
 import {useEffect, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
 import {ArtistTracksCard} from './components/ArtistTracksCard'
 import {EditArtistForm} from './components/EditArtistForm'
-
+import {ArtistAlbumsCard} from './components/ArtistAlbumsCard'
 export const EditArtistView = () => {
 	const {id} = useParams<{id: string}>()
 	const navigate = useNavigate()
 	const [form] = Form.useForm()
 	const [loading, setLoading] = useState(false)
 	const [artist, setArtist] = useState<ArtistResponse | null>(null)
+	const [albums, setAlbums] = useState<AlbumResponse[]>([])
+	const [tracks, setTracks] = useState<TrackResponse[]>([])
 
 	const fetchArtist = async () => {
 		if (!id) return
@@ -29,8 +36,40 @@ export const EditArtistView = () => {
 		}
 	}
 
+	const fetchTracks = async () => {
+		if (!id) return
+		setLoading(true)
+		try {
+			const data = await trackService.get({
+				page: 0,
+				size: 10,
+				artistId: parseInt(id),
+			})
+			setTracks(data)
+		} catch (error) {
+			message.error('Failed to fetch tracks')
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const fetchAlbums = async () => {
+		if (!id) return
+		setLoading(true)
+		try {
+			const data = await artistService.getAlbums(parseInt(id))
+			setAlbums(data)
+		} catch (error) {
+			message.error('Failed to fetch albums')
+		} finally {
+			setLoading(false)
+		}
+	}
+
 	useEffect(() => {
 		fetchArtist()
+		fetchTracks()
+		fetchAlbums()
 	}, [id, form, navigate])
 
 	const handleUpdate = async (values: ArtistRequest) => {
@@ -60,14 +99,17 @@ export const EditArtistView = () => {
 			{id && (
 				<ArtistTracksCard
 					artistId={parseInt(id)}
-					tracks={artist?.tracks || []}
-					refetchData={fetchArtist}
+					tracks={tracks}
+					refetchData={fetchTracks}
 				/>
 			)}
-			<Card title='Albums'>
-				{/* Albums table and add/remove logic goes here */}
-				<div>Albums management for artist {id}</div>
-			</Card>
+			{id && (
+				<ArtistAlbumsCard
+					artistId={parseInt(id)}
+					albums={albums}
+					refetchData={fetchAlbums}
+				/>
+			)}
 		</div>
 	)
 }

@@ -45,7 +45,7 @@ export const MainLayout: React.FC = () => {
 	]
 
 	return (
-		<Layout className='h-[100dvh]'>
+		<Layout className='h-[100dvh] overflow-hidden'>
 			<Sider width={200} className='!bg-white'>
 				<div className='h-16 flex items-center justify-center'>
 					<h1 className='text-xl font-bold'>Rhymcoffer Admin</h1>
@@ -57,7 +57,7 @@ export const MainLayout: React.FC = () => {
 					className='border-r-0 bg-white'
 				/>
 			</Sider>
-			<Layout className='h-full'>
+			<Layout className='h-full overflow-hidden'>
 				<Header className='!bg-white flex items-center justify-between px-6'>
 					<div className='text-lg font-semibold'>
 						{menuItems.find((item) => item.key === location.pathname)?.label}
@@ -72,7 +72,7 @@ export const MainLayout: React.FC = () => {
 						</button>
 					</div>
 				</Header>
-				<Content className='p-6 bg-gray-50 h-full flex flex-col'>
+				<Content className='p-6 bg-gray-50 h-full flex flex-col overflow-auto'>
 					<Outlet />
 				</Content>
 			</Layout>

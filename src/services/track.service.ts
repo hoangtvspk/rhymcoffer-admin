@@ -1,10 +1,30 @@
-import type {TrackRequest, TrackResponse, BaseResponse} from '../types/api'
+import type {
+	TrackRequest,
+	TrackResponse,
+	BaseResponse,
+	PaginationRequest,
+} from '../types/api'
 import api from './api'
 
 export const trackService = {
-	getAll: async (): Promise<TrackResponse[]> => {
-		const response =
-			await api.get<BaseResponse<TrackResponse[]>>('/admin/tracks')
+	get: async (
+		params: PaginationRequest & {
+			name?: string
+			artistId?: number
+			albumId?: number
+			userId?: number
+			minPopularity?: number
+			explicit?: boolean
+		}
+	): Promise<TrackResponse[]> => {
+		const response = await api.get<BaseResponse<TrackResponse[]>>(
+			'/admin/tracks',
+			{
+				params: {
+					...params,
+				},
+			}
+		)
 		if (!response.data.success) throw new Error(response.data.message)
 		return response.data.data
 	},

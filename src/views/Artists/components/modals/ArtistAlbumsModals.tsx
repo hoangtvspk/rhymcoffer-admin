@@ -1,18 +1,18 @@
-import type {TrackResponse} from '@/types/api'
 import {Modal} from 'antd'
+import type {AlbumResponse} from '@/types/api'
 
-export const RemoveTracksModal = ({
+export const RemoveAlbumsModal = ({
 	open,
 	onOk,
 	onCancel,
 	confirmLoading,
-	tracksToRemove,
+	albumsToRemove,
 }: {
 	open: boolean
 	onOk: () => void
 	onCancel: () => void
 	confirmLoading: boolean
-	tracksToRemove: TrackResponse[]
+	albumsToRemove: AlbumResponse[]
 }) => (
 	<Modal
 		open={open}
@@ -25,8 +25,8 @@ export const RemoveTracksModal = ({
 	>
 		Are you sure you want to remove the following track(s) from this artist?
 		<ul className='mt-2'>
-			{tracksToRemove.map((t) => (
-				<li key={t.id}>- {t.name}</li>
+			{albumsToRemove.map((a) => (
+				<li key={a.id}>- {a.name}</li>
 			))}
 		</ul>
 	</Modal>

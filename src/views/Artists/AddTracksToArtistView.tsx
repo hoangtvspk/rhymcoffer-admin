@@ -1,9 +1,10 @@
 import {useEffect, useState} from 'react'
 import {useParams, useNavigate} from 'react-router-dom'
-import {Card, Table, Button, message} from 'antd'
+import {Card, Table, Button, message, Image} from 'antd'
 import {trackService} from '@/services/track.service'
 import {artistService} from '@/services/artist.service'
 import type {TrackResponse} from '@/types/api'
+import {ColumnType} from 'antd/es/table'
 
 export const AddTracksToArtistView = () => {
 	const {id} = useParams<{id: string}>()
@@ -17,11 +18,16 @@ export const AddTracksToArtistView = () => {
 			if (!id) return
 			setLoading(true)
 			try {
-				const allTracks = await trackService.getAll()
-				const artist = await artistService.getById(parseInt(id))
-				setTracks(
-					allTracks.filter((t) => !artist.tracks.some((at) => at.id === t.id))
-				)
+				const allTracks = await trackService.get({
+					page: 0,
+					size: 10,
+				})
+				const tracks = await trackService.get({
+					page: 0,
+					size: 10,
+					artistId: parseInt(id),
+				})
+				setTracks(allTracks.filter((t) => !tracks.some((at) => at.id === t.id)))
 			} catch (error) {
 				message.error('Failed to fetch tracks')
 			} finally {
@@ -45,11 +51,57 @@ export const AddTracksToArtistView = () => {
 		}
 	}
 
-	const columns = [
-		{title: 'Name', dataIndex: 'name', key: 'name'},
-		{title: 'Popularity', dataIndex: 'popularity', key: 'popularity'},
-		{title: 'Duration (ms)', dataIndex: 'durationMs', key: 'durationMs'},
-		{title: 'Track Number', dataIndex: 'trackNumber', key: 'trackNumber'},
+	const columns: ColumnType<TrackResponse>[] = [
+		{
+			title: 'Id',
+			dataIndex: 'id',
+			key: 'id',
+			align: 'center',
+		},
+		{
+			title: 'Name',
+			dataIndex: 'name',
+			key: 'name',
+			align: 'center',
+		},
+		{
+			title: 'Image',
+			dataIndex: 'image',
+			key: 'image',
+			align: 'center',
+			render: (_, record: TrackResponse) => (
+				<div>
+					<Image
+						src={
+							'https://vcdn1-vnexpress.vnecdn.net/2022/02/09/jisoo-5753-1632298728-1417-1644390050.jpg?w=460&h=0&q=100&dpr=2&fit=crop&s=2go4rNn55C2cgKQ_YlbNlQ'
+						}
+						alt={record.name}
+						width={100}
+						height={100}
+						className='rounded-2xl object-cover'
+						rootClassName='rounded-2xl'
+					/>
+				</div>
+			),
+		},
+		{
+			title: 'Popularity',
+			dataIndex: 'popularity',
+			key: 'popularity',
+			align: 'center',
+		},
+		{
+			title: 'Duration (ms)',
+			dataIndex: 'durationMs',
+			key: 'durationMs',
+			align: 'center',
+		},
+		{
+			title: 'Track Number',
+			dataIndex: 'trackNumber',
+			key: 'trackNumber',
+			align: 'center',
+		},
 	]
 
 	return (

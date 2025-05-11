@@ -17,7 +17,10 @@ export const AddTrackToAlbumView = () => {
 			if (!id) return
 			setLoading(true)
 			try {
-				const allTracks = await trackService.getAll()
+				const allTracks = await trackService.get({
+					page: 0,
+					size: 10,
+				})
 				const album = await albumService.getById(parseInt(id))
 				const albumTrackIds = album.tracks.map((t: any) => t.id)
 				setTracks(allTracks.filter((t) => !albumTrackIds.includes(t.id)))

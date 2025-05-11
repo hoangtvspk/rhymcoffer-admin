@@ -1,4 +1,5 @@
 import type {
+	AlbumResponse,
 	ArtistRequest,
 	ArtistResponse,
 	BaseResponse,
@@ -95,6 +96,30 @@ export const artistService = {
 		const response = await api.delete<BaseResponse<null>>(
 			`/admin/artists/${id}/tracks`,
 			{data: trackIds}
+		)
+		if (!response.data.success) throw new Error(response.data.message)
+	},
+
+	getAlbums: async (id: number): Promise<AlbumResponse[]> => {
+		const response = await api.get<BaseResponse<AlbumResponse[]>>(
+			`/admin/artists/${id}/albums`
+		)
+		if (!response.data.success) throw new Error(response.data.message)
+		return response.data.data
+	},
+
+	addAlbums: async (id: number, albumIds: number[]): Promise<void> => {
+		const response = await api.post<BaseResponse<null>>(
+			`/admin/artists/${id}/albums`,
+			albumIds
+		)
+		if (!response.data.success) throw new Error(response.data.message)
+	},
+
+	removeAlbums: async (id: number, albumIds: number[]): Promise<void> => {
+		const response = await api.delete<BaseResponse<null>>(
+			`/admin/artists/${id}/albums`,
+			{data: albumIds}
 		)
 		if (!response.data.success) throw new Error(response.data.message)
 	},

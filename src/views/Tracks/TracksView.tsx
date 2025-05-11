@@ -21,7 +21,10 @@ const TracksView = () => {
 	const fetchTracks = async () => {
 		try {
 			setLoading(true)
-			const data = await trackService.getAll()
+			const data = await trackService.get({
+				page: 0,
+				size: 10,
+			})
 			setTracks(data)
 		} catch (error) {
 			message.error('Failed to fetch tracks')
