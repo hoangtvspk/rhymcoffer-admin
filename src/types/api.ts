@@ -1,3 +1,8 @@
+export interface PaginationRequest {
+	page: number
+	size: number
+}
+
 export interface UserRequest {
 	username: string
 	email: string
